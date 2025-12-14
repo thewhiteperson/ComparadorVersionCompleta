@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='css/product.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/header.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        {% include 'layouts/header.html' %}
+    </header>
+
+    <!-- PRODUCT DETAIL -->
+    <main class="product-detail">
+
+        <!-- LEFT: PRODUCT INFO -->
+        <section class="product-info">
+            <div class="product-top">
+                <div class="product-image">
+                    <img
+                        style="max-height: 100%;"
+                        src="{{ producto.imagen }}"
+                        alt="{{ producto.modelo }}"
+                    >
+                </div>
+
+                <div class="product-main-info">
+                    <h2>{{ producto.modelo }}</h2>
+                    <p class="brand">{{ producto.marca }}</p>
+                </div>
+
+                <div class="favorite-detail">❤️</div>
+            </div>
+
+            <div class="product-description">
+                <h4>{{ producto.modelo }}</h4>
+                <p>
+                    {{ producto.descripcion or "Descripción no disponible para este producto." }}
+                </p>
+            </div>
+        </section>
+
+        <!-- RIGHT: STORES -->
+        <section class="store-list">
+
+            {% set mejor_precio = tiendas | min(attribute='precio') %}
+
+            {% for t in tiendas %}
+            <div class="store-card">
+
+                <div class="store-header">
+                    <h4>{{ t.tienda }}</h4>
+
+                    {% if t.envio_gratis %}
+                        <span class="shipping free">Envío Gratis</span>
+                    {% else %}
+                        <span class="shipping none">Sin datos de envío</span>
+                    {% endif %}
+                </div>
+
+                <p class="price">
+                    $ {{ "{:,}".format(t.precio) }}
+                </p>
+
+                {% if t.precio == mejor_precio.precio %}
+                    <p class="status available">🔥 Mejor precio</p>
+                {% else %}
+                    <p class="status available">Disponible</p>
+                {% endif %}
+
+                <a
+                    class="btn-go"
+                    href="{{ t.url }}"
+                    target="_blank"
+                >
+                    Llévame allí
+                </a>
+
+                <p class="updated">
+                    Precio actualizado el día {{ t.fecha_actualizacion }}
+                </p>
+
+            </div>
+            {% endfor %}
+
+        </section>
+
+    </main>
+</body>
+</html>
